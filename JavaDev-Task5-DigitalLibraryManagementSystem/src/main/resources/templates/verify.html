@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Verify your email')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container auth-layout">
+    <section class="auth-aside">
+        <p class="eyebrow">One quick step</p>
+        <h1>Check your inbox.</h1>
+        <p>We sent a 6-digit code to confirm that this email address is yours. It only works for a few minutes.</p>
+        <span class="auth-decoration">ALMOST<br>THERE.</span>
+    </section>
+    <section class="card auth-card">
+        <p class="eyebrow">Email verification</p>
+        <h2>Enter your code</h2>
+        <p class="subtitle">Type the code from the email to finish setting up your account.</p>
+        <div th:replace="~{fragments/layout :: flash}"></div>
+        <div class="alert alert-warn" th:if="${param.required}">Please verify your email address before signing in.</div>
+        <form th:action="@{/verify}" method="post">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" th:value="${email}" placeholder="you@example.com" required>
+            <label for="code">6-digit code</label>
+            <input type="text" id="code" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code"
+                   maxlength="6" pattern="[0-9]{6}" placeholder="000000" required autofocus>
+            <div class="form-actions"><button type="submit" class="btn">Verify email <span>↗</span></button></div>
+        </form>
+        <form th:action="@{/verify/resend}" method="post" class="inline-form">
+            <input type="hidden" name="email" th:value="${email}">
+            <p class="auth-foot">Did not get it? <button type="submit" class="link-button">Send a new code</button></p>
+        </form>
+        <p class="auth-foot"><a th:href="@{/login}">Back to sign in</a></p>
+    </section>
+</main>
+</body>
+</html>

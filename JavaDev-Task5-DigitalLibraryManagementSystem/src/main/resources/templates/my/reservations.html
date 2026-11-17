@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('My Reservations')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container workspace-page">
+    <p class="eyebrow">YOUR SAVED TITLES</p>
+    <h1>My reservations</h1>
+    <p class="subtitle">When a copy is returned, open the catalogue and issue the book. Members who reserved earlier get the free copies first.</p>
+
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <div class="table-wrap">
+    <table>
+        <thead>
+        <tr><th>Book</th><th>Reserved on</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="r : ${reservations}">
+            <td>
+                <strong th:text="${r.book.title}">Title</strong><br>
+                <span class="muted" th:text="${r.book.author}">Author</span>
+            </td>
+            <td th:text="${#temporals.format(r.reservedAt, 'dd MMM yyyy HH:mm')}">date</td>
+            <td>
+                <span th:if="${r.status.name() == 'ACTIVE'}" class="badge badge-amber">Waiting</span>
+                <span th:if="${r.status.name() == 'FULFILLED'}" class="badge badge-green">Issued to you</span>
+                <span th:if="${r.status.name() == 'CANCELLED'}" class="badge badge-gray">Cancelled</span>
+            </td>
+            <td>
+                <th:block th:if="${r.status.name() == 'ACTIVE'}">
+                    <a th:if="${r.book.availableQuantity > 0}" class="btn btn-sm btn-success"
+                       th:href="@{/books(q=${r.book.title})}">A copy is free - issue it</a>
+                    <form class="inline" th:action="@{/my/reservations/{id}/cancel(id=${r.id})}" method="post">
+                        <button type="submit" class="btn btn-sm btn-outline">Cancel</button>
+                    </form>
+                </th:block>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(reservations)}">
+            <td colspan="4" class="empty">No reservations. You can reserve a book from the catalogue when every copy is out.</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</main>
+</body>
+</html>

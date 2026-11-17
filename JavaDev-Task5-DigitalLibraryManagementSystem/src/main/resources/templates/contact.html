@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Help desk')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container medium">
+    <section class="card contact-card">
+        <p class="eyebrow">We're here to help</p>
+        <h1>Talk to your librarian.</h1>
+        <p class="subtitle">Send a question or request. Your message will appear in the library help desk.</p>
+        <div th:replace="~{fragments/layout :: flash}"></div>
+        <form th:action="@{/contact}" th:object="${form}" method="post">
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" th:field="*{subject}" placeholder="What can we help with?">
+            <div class="field-error" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>
+            <label for="message">Message</label>
+            <textarea id="message" th:field="*{message}" placeholder="Write your message here..."></textarea>
+            <div class="field-error" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></div>
+            <div class="form-actions"><button type="submit" class="btn">Send message <span>↗</span></button></div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

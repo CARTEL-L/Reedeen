@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Join the library')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container auth-layout">
+    <section class="auth-aside">
+        <p class="eyebrow">A membership worth having</p>
+        <h1>Make room for more stories.</h1>
+        <p>Create your account to explore the collection, borrow books and manage reservations.</p>
+        <span class="auth-decoration">TURN<br>THE PAGE.</span>
+    </section>
+    <section class="card auth-card">
+        <p class="eyebrow">Get started</p>
+        <h2>Create your account</h2>
+        <p class="subtitle">A few details and you're part of the reading community.</p>
+        <form th:action="@{/register}" th:object="${form}" method="post">
+            <div class="alert alert-error" th:if="${#fields.hasGlobalErrors()}">
+                <div th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div>
+            </div>
+            <label for="fullName">Full name</label>
+            <input type="text" id="fullName" th:field="*{fullName}" placeholder="Your full name">
+            <div class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+            <label for="email">Email address</label>
+            <input type="email" id="email" th:field="*{email}" placeholder="you@example.com">
+            <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            <label for="password">Password</label>
+            <input type="password" id="password" th:field="*{password}" placeholder="At least 8 characters">
+            <div class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            <label for="confirmPassword">Confirm password</label>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" placeholder="Enter password again">
+            <div class="field-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+            <div class="form-actions"><button type="submit" class="btn">Create account <span>↗</span></button></div>
+        </form>
+        <p class="auth-foot">Already a member? <a th:href="@{/login}">Sign in</a></p>
+    </section>
+</main>
+</body>
+</html>

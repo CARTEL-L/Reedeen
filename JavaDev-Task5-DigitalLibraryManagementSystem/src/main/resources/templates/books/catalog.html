@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Explore the collection')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container">
+    <div class="page-intro">
+        <p class="eyebrow">The collection</p>
+        <h1>Find your next read.</h1>
+        <p class="subtitle">Search the shelves by title or author, or browse a category. Loans last <span th:text="${loanDays}">14</span> days; late returns cost <span th:text="${currency} + ${finePerDay}">5</span> per day.</p>
+    </div>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+    <form class="search-bar" th:action="@{/books}" method="get">
+        <input type="text" name="q" th:value="${q}" placeholder="Search by title or author">
+        <select name="category">
+            <option value="">All categories</option>
+            <option th:each="c : ${categories}" th:value="${c}" th:text="${c}" th:selected="${c == selectedCategory}"></option>
+        </select>
+        <button type="submit" class="btn">Search collection</button>
+        <a class="btn btn-outline" th:href="@{/books}">Reset</a>
+    </form>
+    <div class="book-grid">
+        <article class="book-card" th:each="b : ${books}">
+            <div class="book-art"><span class="book-art-mark">R</span><span class="book-category" th:text="${b.category}">Category</span></div>
+            <div class="book-card-body">
+                <h2 th:text="${b.title}">Book title</h2>
+                <p class="book-author" th:text="${b.author}">Author</p>
+                <p class="book-isbn">ISBN <span th:text="${b.isbn}">0000000000</span></p>
+                <div class="book-card-foot">
+                    <span class="availability" th:text="${b.availableQuantity} + ' of ' + ${b.totalQuantity} + ' available'">Available</span>
+                    <span th:if="${issuedBookIds.contains(b.id)}" class="badge badge-gray">You have this</span>
+                    <th:block th:unless="${issuedBookIds.contains(b.id)}">
+                        <form th:if="${b.availableQuantity > 0}" class="inline" th:action="@{/books/{id}/issue(id=${b.id})}" method="post">
+                            <button type="submit" class="btn btn-sm">Borrow</button>
+                        </form>
+                        <th:block th:if="${b.availableQuantity == 0}">
+                            <span th:if="${reservedBookIds.contains(b.id)}" class="badge badge-amber">Reserved by you</span>
+                            <form th:unless="${reservedBookIds.contains(b.id)}" class="inline" th:action="@{/books/{id}/reserve(id=${b.id})}" method="post">
+                                <button type="submit" class="btn btn-sm btn-outline">Reserve</button>
+                            </form>
+                        </th:block>
+                    </th:block>
+                </div>
+            </div>
+        </article>
+        <div class="card empty book-empty" th:if="${#lists.isEmpty(books)}">No books match your search. Try another title, author or category.</div>
+    </div>
+</main>
+</body>
+</html>
